@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFileChooser;
 
@@ -27,6 +29,10 @@ public class App {
     
     public static ArrayList<LineNote> lineNotes;
     public static File lineNotesFile;
+
+    public static Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
+    public static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.BOLD);
+
 
     public static void main(String[] args) {
         //Create or find file
@@ -73,7 +79,7 @@ public class App {
 
     public static void addPdfCellGrey(PdfPTable table, String value)
     {
-        PdfPCell cell=new PdfPCell(new Phrase(value));
+        PdfPCell cell=new PdfPCell(new Phrase(value, boldFont));
         cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         table.addCell(cell);
@@ -97,22 +103,21 @@ public class App {
         }
         //Open save window
         JFileChooser jfc = new JFileChooser(System.getProperty("user.home"));
-        jfc.setDialogTitle("Select Export Folde");
+        jfc.setDialogTitle("Select Export Folder");
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int jfcResult = jfc.showSaveDialog(null);
         if(jfcResult == JFileChooser.APPROVE_OPTION)
         {
             File exportDir = jfc.getSelectedFile();
-            for(String actor : lineNotesByActor.keySet())
+            Map<String, PdfPTable> actorToTable = new HashMap<String, PdfPTable>();
+            try
             {
-                List<LineNote> lineNotes = lineNotesByActor.get(actor);
-                try {
-                    Document lineNoteDoc = new Document(PageSize.LETTER.rotate());
-                    PdfWriter.getInstance(lineNoteDoc, new FileOutputStream(exportDir.getAbsolutePath() + "/" + actor + "LineNotes.pdf"));
-                    lineNoteDoc.open();
-                    lineNoteDoc.add(new Chunk("")); // << this will do the trick.             
+                for(String actor : lineNotesByActor.keySet())
+                {                    
+                    //Initialize table
                     PdfPTable lineNoteTable = new PdfPTable(7);
-                    PdfPCell lineNoteTableCell;
+                    lineNoteTable.setWidths(new int[]{1,1,2,4,4,2,1});
+                    lineNoteTable.setHorizontalAlignment(PdfPTable.ALIGN_CENTER);
 
                     //Add header row
                     addPdfCellGrey(lineNoteTable, "Scene");
@@ -124,30 +129,42 @@ public class App {
                     addPdfCellGrey(lineNoteTable, "Fixed");
                     lineNoteTable.setHeaderRows(1);
 
-                    List<String> allValues = new ArrayList<String>();
-                    //Insert line note into table row
-                    for (LineNote ln : lineNotes) 
-                    {   
-                        String[] lnValues = ln.toString().substring((actor.length())+1).split(",");
-                        Collections.addAll(allValues, lnValues);                              
-                    }
-                    for(String value : allValues)
-                    {
-                        lineNoteTableCell=new PdfPCell(new Phrase(value));
-                        lineNoteTable.addCell(lineNoteTableCell);
-                    }
+                    actorToTable.put(actor, lineNoteTable);
+
+                }
+
+                //Add line notes to table
+                for (LineNote ln : lineNotes) 
+                {   
+                    ln.addToTable(actorToTable.get(ln.actor));                          
+                }
+
+                //Create document, add table, save
+                for(String actor : lineNotesByActor.keySet())
+                {
+                    //Setup document
+                    Document lineNoteDoc = new Document(PageSize.LETTER.rotate());
+                    PdfWriter.getInstance(lineNoteDoc, new FileOutputStream(exportDir.getAbsolutePath() + "/" + actor + "LineNotes.pdf"));
+                    lineNoteDoc.open();
+
+                    //Add Title
+                    Paragraph title = new Paragraph(actor + " Line Notes For " + LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), titleFont);
+                    title.setAlignment(Paragraph.ALIGN_CENTER);
+                    lineNoteDoc.add(title); 
+                    lineNoteDoc.add(new Chunk(""));
+
                     //Attach table to PDF and close the document
-                    lineNoteDoc.add(lineNoteTable);                       
+                    lineNoteDoc.add(actorToTable.get(actor));                       
                     lineNoteDoc.close();
-                } 
-                catch (IOException e) 
-                {
-                    e.printStackTrace();
                 }
-                catch(DocumentException e)
-                {
-                    e.printStackTrace();
-                }
+            }
+            catch (IOException e) 
+            {
+                e.printStackTrace();
+            }
+            catch(DocumentException e)
+            {
+                e.printStackTrace();
             }
         }
 

@@ -1,5 +1,10 @@
 package linr;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+
 public class LineNote
 {
     public String actor;
@@ -30,8 +35,31 @@ public class LineNote
         } catch(Exception e){}
         return null;
     }
+
     public String toString()
     {
         return actor + "," + scene + "," + page + "," + action + "," + line + "," + notes + "," + occurences + "," + (fixed ? "TRUE" : "FALSE");
+    }
+
+    public void addToTable(PdfPTable table)
+    {
+        PdfPCell cell=new PdfPCell(new Phrase(scene));
+        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+        table.addCell(cell);
+        cell=new PdfPCell(new Phrase("" + page));
+        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+        table.addCell(cell);
+        cell=new PdfPCell(new Phrase(action));
+        table.addCell(cell);
+        cell=new PdfPCell(new Phrase(line));
+        table.addCell(cell);
+        cell=new PdfPCell(new Phrase(notes));
+        table.addCell(cell);
+        cell=new PdfPCell(new Phrase("" + occurences));
+        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+        table.addCell(cell);
+        cell=new PdfPCell(new Phrase((fixed ? "Yes" : "No")));
+        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+        table.addCell(cell);
     }
 }
