@@ -75,9 +75,6 @@ public class LineNote
         cell=new PdfPCell(new Phrase("" + occurences));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         table.addCell(cell);
-        cell=new PdfPCell(new Phrase((fixed ? "Yes" : "No")));
-        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        table.addCell(cell);
     }
 
     @Override

@@ -120,8 +120,8 @@ public class App {
                 for(String actor : lineNotesByActor.keySet())
                 {                    
                     //Initialize table
-                    PdfPTable lineNoteTable = new PdfPTable(7);
-                    lineNoteTable.setWidths(new int[]{1,1,2,4,4,2,1});
+                    PdfPTable lineNoteTable = new PdfPTable(6);
+                    lineNoteTable.setWidths(new int[]{1,1,2,4,4,2});
                     lineNoteTable.setHorizontalAlignment(PdfPTable.ALIGN_CENTER);
 
                     //Add header row
@@ -131,7 +131,6 @@ public class App {
                     addPdfCellGrey(lineNoteTable, "Line");
                     addPdfCellGrey(lineNoteTable, "Notes");
                     addPdfCellGrey(lineNoteTable, "Occurences");
-                    addPdfCellGrey(lineNoteTable, "Fixed");
                     lineNoteTable.setHeaderRows(1);
 
                     actorToTable.put(actor, lineNoteTable);

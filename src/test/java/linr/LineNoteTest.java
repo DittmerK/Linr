@@ -12,7 +12,7 @@ public class LineNoteTest
     @Test
     public void testAddToTable() 
     {
-        PdfPTable table = new PdfPTable(7);
+        PdfPTable table = new PdfPTable(6);
         LineNote testLN = new LineNote("TESTTEST", "1", 2, "Called Line", "Test Line", " ", 1, false);
         testLN.addToTable(table);
         assertEquals(table.size(), 1);
