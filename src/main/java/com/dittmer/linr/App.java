@@ -1,9 +1,16 @@
 package com.dittmer.linr;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import javax.swing.JFileChooser;
 
@@ -11,21 +18,41 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
 
-public class App {
+public class App extends Application{
     
     public static ArrayList<LineNote> lineNotes;
 
     public static Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
     public static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.BOLD);
+    
+    public Scene scene;
 
 
-    public static void main(String[] args) 
-    {        
+    @Override
+    public void start(Stage stage) throws Exception
+    {
+        stage.setTitle("Linr");
+
+        URL fxmlURL = App.class.getResource("fxml/enterline.fxml");
+        FXMLLoader loader = new FXMLLoader(fxmlURL);
+        Parent root = loader.load();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args)
+    {
         //Initialize arraylist
         lineNotes = new ArrayList<>();
 
         loadSaveFile("notes.csv");
-
+        launch(args);
+    }
+    
+    @Override
+    public void stop() 
+    {
         exportPDFs();
 
         writeSaveFile("notes.csv");
