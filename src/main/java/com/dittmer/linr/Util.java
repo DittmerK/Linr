@@ -77,7 +77,20 @@ public class Util
         return costs[s2.length()];
     }
 
-  public static void loadSaveFile(String saveFileName)
+    public static String scrubLeadingAndTrailingSpace(String s)
+    {
+        while(s.charAt(s.length()-1) == ' ' || s.charAt(s.length()-1) == '\t')
+        {
+            s = s.substring(0, s.length()-2);
+        }
+        while(s.charAt(0) == ' ' || s.charAt(0) == '\t')
+        {
+            s = s.substring(1, s.length()-1);
+        }
+        return s;
+    }
+
+    public static void loadSaveFile(String saveFileName)
     {
         //Create or find file
         File linrFile = new File(System.getProperty("user.home") + "/.linr");

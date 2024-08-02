@@ -121,7 +121,7 @@ public class EnterLineController implements Initializable
 
     public void submit()
     {
-        LineNote ln = new LineNote(textActor.getText(), textScene.getText(), Integer.parseInt(textPage.getText()), comboAction.getValue(), textLine.getText(), textNotes.getText(), 1, false);
+        LineNote ln = new LineNote(Util.scrubLeadingAndTrailingSpace(textActor.getText()), Util.scrubLeadingAndTrailingSpace(textScene.getText()), Integer.parseInt(Util.scrubLeadingAndTrailingSpace(textPage.getText())), comboAction.getValue(), Util.scrubLeadingAndTrailingSpace(textLine.getText()), Util.scrubLeadingAndTrailingSpace(textNotes.getText()), 1, false);
         
         //Check for duplicate
         ArrayList<LineNote> lineNotes = App.lineNotes;
@@ -129,7 +129,10 @@ public class EnterLineController implements Initializable
         for(int i = 0; i < lineNotes.size(); i++)
         {
             LineNote ln2 = lineNotes.get(i);
-            if(ln2.actor.equals(ln.actor) && ln2.scene.equals(ln.scene) && ln2.page == ln.page && ln2.action.equals(ln.action) && (ln2.line.equals(ln.line) || ln2.line.contains(ln.line) || ln.line.contains(ln2.line) || Util.similarity(ln.line, ln2.line) > .8))
+            String lnline = ln.line.toLowerCase();
+            String ln2line = ln2.line.toLowerCase();
+            System.out.println(lnline + " vs " + ln2line);
+            if(ln2.actor.equals(ln.actor) && ln2.scene.equals(ln.scene) && ln2.page == ln.page && ln2.action.equals(ln.action) && (ln2line.equals(lnline) || ln2line.contains(lnline) || lnline.contains(ln2line) || Util.similarity(lnline, ln2line) > .8))
             {
                 possibleDupes.add(ln2);
                 
@@ -162,7 +165,7 @@ public class EnterLineController implements Initializable
         textActor.setText("");
         textScene.setText("");
         textPage.setText("");
-        comboAction.setValue("Action");
+        comboAction.setValue(null);
         textLine.setText("");
         textNotes.setText("");
     }
