@@ -18,6 +18,7 @@
     -fx-padding: 12 30 12 30;
     -fx-text-fill: white;
     -fx-font-size: 12px;
+    -fx-cursor: hand;
  }
 
  .comboBox {

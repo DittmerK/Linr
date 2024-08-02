@@ -15,6 +15,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -22,6 +24,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 
 public class EnterLineController implements Initializable
@@ -121,20 +124,36 @@ public class EnterLineController implements Initializable
         LineNote ln = new LineNote(textActor.getText(), textScene.getText(), Integer.parseInt(textPage.getText()), comboAction.getValue(), textLine.getText(), textNotes.getText(), 1, false);
         
         //Check for duplicate
-        boolean foundDupe = false;
         ArrayList<LineNote> lineNotes = App.lineNotes;
-        for(LineNote ln2 : lineNotes)
+        ArrayList<LineNote> possibleDupes = new ArrayList<LineNote>();
+        for(int i = 0; i < lineNotes.size(); i++)
         {
-            if(ln2.actor.equals(ln.actor) && ln2.line.equals(ln.line))
+            LineNote ln2 = lineNotes.get(i);
+            if(ln2.actor.equals(ln.actor) && ln2.scene.equals(ln.scene) && ln2.page == ln.page && ln2.action.equals(ln.action) && (ln2.line.equals(ln.line) || ln2.line.contains(ln.line) || ln.line.contains(ln2.line) || Util.similarity(ln.line, ln2.line) > .8))
             {
-                foundDupe = true;
-                break;
+                possibleDupes.add(ln2);
+                
             }
         }
-        if(foundDupe)
+        if(possibleDupes.size() > 0)
         {
-            //Launch dupe window
-        } 
+            Parent root;
+                try {
+                    FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/duplicate.fxml"));
+                    DuplicateController dupeController = new DuplicateController();
+                    loader.setController(dupeController);
+                    root = loader.load();
+                    Stage stage = new Stage();
+                    stage.setTitle("Duplicate Note");
+                    stage.setScene(new Scene(root, 450, 300));
+                    stage.show();
+                    dupeController.setArgs(ln, possibleDupes);
+                    
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
         else
         {
             lineNotes.add(ln);
