@@ -1,10 +1,7 @@
 package com.dittmer.linr;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import com.dittmer.linr.LineNote;
-import com.itextpdf.text.pdf.PdfPTable;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class LineNoteTest 
 {
@@ -12,10 +9,10 @@ public class LineNoteTest
     @Test
     public void testAddToTable() 
     {
-        PdfPTable table = new PdfPTable(6);
         LineNote testLN = new LineNote("TESTTEST", "1", 2, "Called Line", "Test Line", " ", 1, false);
-        testLN.addToTable(table);
-        assertEquals(table.size(), 1);
+        String[] actual = testLN.addToTable();
+        String[] expected = new String[]{"1", "" + 2, "Called Line", "Test Line", " ", "" + 1};
+        assertArrayEquals(expected, actual);
     }
 
     @Test
@@ -66,7 +63,7 @@ public class LineNoteTest
     @Test
     public void testParse() {
         LineNote expectedLN = new LineNote("Alexa", "1", 2, "Called Line", "Test Line", " ", 1, false);
-        assertEquals(expectedLN, LineNote.parse("Alexa,1,2,Called Line,Test Line, ,1,FALSE"));
+        assertEquals(expectedLN, LineNote.parse("Alexa;1;2;Called Line;Test Line; ;1;FALSE"));
     }
 
     @Test

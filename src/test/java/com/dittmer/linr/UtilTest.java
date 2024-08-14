@@ -3,12 +3,8 @@
  */
 package com.dittmer.linr;
 
-import org.junit.*;
-
-import com.dittmer.linr.App;
-import com.dittmer.linr.LineNote;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,7 +13,30 @@ public class UtilTest {
     
     public UtilTest() {}
     
-    
+    @Test
+    public void testScrubLeadingAndTrailingSpaces()
+    {
+        String s = "    s   ";
+        assertEquals("s", Util.scrubLeadingAndTrailingSpace(s));
+    }
+
+    @Test 
+    public void testEditDistance()
+    {
+        String foo = "foo";
+        String foot = "foot";
+        int editDistance = Util.editDistance(foot, foo);
+        assertEquals(1, editDistance);
+    }
+
+    @Test
+    public void testSimilarity()
+    {
+        String foo = "foo";
+        String foot = "foot";
+        double sim = Util.similarity(foot, foo);
+        assertEquals(.75, sim, 0.001);
+    }
 
     @Test
     public void testLoadSaveFile()
@@ -34,7 +53,7 @@ public class UtilTest {
         File lineNotesFile = new File(linrFile, "test.csv");
         try {
             bw = new BufferedWriter(new FileWriter(lineNotesFile));
-            bw.write("Alexa,1,2,Called Line,Test Line, ,1,FALSE");
+            bw.write("Alexa;1;2;Called Line;Test Line;;1;FALSE");
             bw.newLine();
             bw.close();
         } 
@@ -44,11 +63,11 @@ public class UtilTest {
             assertFalse(true);//Fail out
         }
 
-        LineNote expectedLN = new LineNote("Alexa", "1", 2, "Called Line", "Test Line", " ", 1, false);
+        LineNote expectedLN = new LineNote("Alexa", "1", 2, "Called Line", "Test Line", "", 1, true);
         App.lineNotes = new ArrayList<LineNote>();
 
         //Run code and test
-        App.loadSaveFile("test.csv");
+        Util.loadSaveFile("test.csv");
 
         assertEquals(1, App.lineNotes.size());
         assertTrue(expectedLN.equals(App.lineNotes.get(0)));
@@ -62,7 +81,7 @@ public class UtilTest {
     public void testWriteSaveFileDoesntExist()
     {
         //Setup Testdata
-        LineNote expectedLN = new LineNote("Alexa", "1", 2, "Called Line", "Test Line", " ", 1, false);
+        LineNote expectedLN = new LineNote("Alexa", "1", 2, "Called Line", "Test Line", " ", 1, true);
         App.lineNotes = new ArrayList<LineNote>();
         App.lineNotes.add(expectedLN);
         File linrFile = new File(System.getProperty("user.home") + "/.linr");
@@ -70,12 +89,12 @@ public class UtilTest {
 
         //Run code and test
         assertFalse(lineNotesFile.exists());
-        App.writeSaveFile("test.csv");
+        Util.writeSaveFile("test.csv");
         assertTrue(linrFile.exists());
         assertTrue(lineNotesFile.exists());
         try(BufferedReader br = new BufferedReader(new FileReader(lineNotesFile)))
         {
-            assertEquals("Alexa,1,2,Called Line,Test Line, ,1,FALSE", br.readLine());
+            assertEquals("Alexa,1,2,Called Line,Test Line, ,1,TRUE", br.readLine());
         } catch (FileNotFoundException e) {} catch(IOException e) {}
         lineNotesFile.delete();
     }

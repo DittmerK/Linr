@@ -1,9 +1,5 @@
 package com.dittmer.linr;
 
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-
 public class LineNote
 {
     public String actor;
@@ -33,13 +29,26 @@ public class LineNote
     public static String[] actions = {"Called Line", "Paraphrased", "Jumped/Missed Cue", "Pronounciation", "Order of Words", "Missed Word", "Added Word"};
     
     
-    
+    /*
+     * parses a csv string into a LineNote object, maintains the FIXED status of file
+     * @param input String to be parsed
+     */
     public static LineNote parse(String input)
+    {
+        return LineNote.parse(input, false);
+    }
+
+    /*
+     * parses a csv string into a LineNote object
+     * @param input String to be parsed
+     * @param fixNotes Boolean value which will enter all notes as FIXED if set to true
+     */
+    public static LineNote parse(String input, boolean fixNotes) throws NumberFormatException
     {
         try
         {
             LineNote ret = new LineNote();
-            String[] values = input.split(",");
+            String[] values = input.split(";");
             ret.actor = values[0];
             ret.scene = values[1];
             ret.page = Integer.parseInt(values[2].replaceAll(" ", ""));
@@ -47,7 +56,7 @@ public class LineNote
             ret.line = values[4];
             ret.notes = values[5];
             ret.occurences = Integer.parseInt(values[6].replaceAll(" ", ""));
-            ret.fixed = Boolean.parseBoolean(values[7].replaceAll(" ", ""));
+            ret.fixed = fixNotes ? true : Boolean.parseBoolean(values[7].replaceAll(" ", ""));
             return ret;
         } catch(Exception e){ e.printStackTrace(); }
         return null;
@@ -58,23 +67,9 @@ public class LineNote
         return actor + "," + scene + "," + page + "," + action + "," + line + "," + notes + "," + occurences + "," + (fixed ? "TRUE" : "FALSE");
     }
 
-    public void addToTable(PdfPTable table)
+    public String[] addToTable()
     {
-        PdfPCell cell=new PdfPCell(new Phrase(scene));
-        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        table.addCell(cell);
-        cell=new PdfPCell(new Phrase("" + page));
-        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        table.addCell(cell);
-        cell=new PdfPCell(new Phrase(action));
-        table.addCell(cell);
-        cell=new PdfPCell(new Phrase(line));
-        table.addCell(cell);
-        cell=new PdfPCell(new Phrase(notes));
-        table.addCell(cell);
-        cell=new PdfPCell(new Phrase("" + occurences));
-        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        table.addCell(cell);
+        return new String[]{scene, "" +  page, action, line, notes, "" + occurences};
     }
 
     @Override
@@ -135,5 +130,4 @@ public class LineNote
         return true;
     }
 
-   
 }

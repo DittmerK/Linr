@@ -1,15 +1,9 @@
 package com.dittmer.linr;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-
-import org.junit.Test;
-
-import com.dittmer.linr.App;
-import com.dittmer.linr.EnterLineController;
-import com.dittmer.linr.LineNote;
-import com.itextpdf.text.pdf.parser.Line;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.ComboBox;

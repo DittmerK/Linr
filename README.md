@@ -1,7 +1,7 @@
 # Linr
 
 [![License](https://img.shields.io/badge/license-AGPL-blue.svg)](https://github.com/DittmerK/Linr/blob/master/LICENSE.md)
-![Static Badge](https://img.shields.io/badge/Code%20Coverage-88%25-green)
+![Static Badge](https://img.shields.io/badge/Code%20Coverage-86%25-green)
 
 ## Introduction
 

@@ -1,1 +1,7 @@
 /.vscode
+/.gradle
+/build
+/gradle
+/target
+gradlew
+gradle.bat

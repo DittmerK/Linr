@@ -36,16 +36,14 @@ public class App extends Application{
         //Initialize arraylist
         lineNotes = new ArrayList<>();
 
-        Util.loadSaveFile("notes.csv");
+        Util.loadSaveFile("notes.lnr");
         launch(args);
     }
     
     @Override
     public void stop() 
     {
-        Util.exportPDFs();
-
-        Util.writeSaveFile("notes.csv");
+        Util.writeSaveFile("notes.lnr");
         
     }
 

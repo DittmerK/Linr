@@ -1,29 +1,14 @@
 package com.dittmer.linr;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 
 import javax.swing.JFileChooser;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
 public class Util 
 {
-
-    public static Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
-    public static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.BOLD);
 
     /**
     * Calculates the similarity (a number within 0 and 1) between two strings.
@@ -79,13 +64,13 @@ public class Util
 
     public static String scrubLeadingAndTrailingSpace(String s)
     {
-        while(s.charAt(s.length()-1) == ' ' || s.charAt(s.length()-1) == '\t')
+        while(s.length() > 1 && (s.charAt(s.length()-1) == ' ' || s.charAt(s.length()-1) == '\t'))
         {
-            s = s.substring(0, s.length()-2);
+            s = s.substring(0, s.length()-1);
         }
-        while(s.charAt(0) == ' ' || s.charAt(0) == '\t')
+        while(s.length() > 1 && (s.charAt(0) == ' ' || s.charAt(0) == '\t'))
         {
-            s = s.substring(1, s.length()-1);
+            s = s.substring(1, s.length());
         }
         return s;
     }
@@ -107,14 +92,15 @@ public class Util
             String line;
             while((line = br.readLine()) != null)
             {
-                App.lineNotes.add(LineNote.parse(line));
+                App.lineNotes.add(LineNote.parse(line, true));
             }
-        } catch (FileNotFoundException e) {} catch(IOException e) {}
+        } catch (FileNotFoundException e) {} catch(IOException e) {} catch(NumberFormatException e) {}
 
     }
 
     public static void writeSaveFile(String saveFileName)
     {
+        App.lineNotes.sort(new SortLineNotes());
         //Write savefile and close
         //Create or find file
         File linrFile = new File(System.getProperty("user.home") + "/.linr");
@@ -140,16 +126,9 @@ public class Util
         }
     }
 
-    public static void addPdfCellGrey(PdfPTable table, String value)
-    {
-        PdfPCell cell=new PdfPCell(new Phrase(value, boldFont));
-        cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-        table.addCell(cell);
-    }
-
     public static void exportPDFs()
     {
+        App.lineNotes.sort(new SortLineNotes());
         Map<String, ArrayList<LineNote>> lineNotesByActor = new HashMap<String, ArrayList<LineNote>>();
         for(LineNote ln : App.lineNotes)
         {
@@ -161,7 +140,8 @@ public class Util
             {
                 lineNotesByActor.put(ln.actor, new ArrayList<LineNote>());
             }
-            lineNotesByActor.get(ln.actor).add(ln);
+            if(!ln.fixed)
+                lineNotesByActor.get(ln.actor).add(ln);
 
         }
         //Open save window
@@ -172,59 +152,37 @@ public class Util
         if(jfcResult == JFileChooser.APPROVE_OPTION)
         {
             File exportDir = jfc.getSelectedFile();
-            Map<String, PdfPTable> actorToTable = new HashMap<String, PdfPTable>();
+
+            
+            Map<String, ArrayList<String[]>> actorToTable = new HashMap<String, ArrayList<String[]>>();
             try
             {
+                float[] colWidths = new float[]{50,50,125,250,246,100.8898f};
+                String[] headerRow = new String[]{"Scene", "Page", "Action", "Line", "Notes", "Occurences"};
+                //Create document and table
                 for(String actor : lineNotesByActor.keySet())
-                {                    
-                    //Initialize table
-                    PdfPTable lineNoteTable = new PdfPTable(6);
-                    lineNoteTable.setWidths(new int[]{1,1,2,4,4,2});
-                    lineNoteTable.setHorizontalAlignment(PdfPTable.ALIGN_CENTER);
-
-                    //Add header row
-                    addPdfCellGrey(lineNoteTable, "Scene");
-                    addPdfCellGrey(lineNoteTable, "Page");
-                    addPdfCellGrey(lineNoteTable, "Action");
-                    addPdfCellGrey(lineNoteTable, "Line");
-                    addPdfCellGrey(lineNoteTable, "Notes");
-                    addPdfCellGrey(lineNoteTable, "Occurences");
-                    lineNoteTable.setHeaderRows(1);
-
-                    actorToTable.put(actor, lineNoteTable);
-
+                {   
+                    ArrayList<String[]> table = new ArrayList<String[]>();
+                    actorToTable.put(actor, table);
                 }
-
                 //Add line notes to table
                 for (LineNote ln : App.lineNotes) 
                 {   
-                    ln.addToTable(actorToTable.get(ln.actor));                          
+                    actorToTable.get(ln.actor).add(ln.addToTable());
                 }
-
-                //Create document, add table, save
                 for(String actor : lineNotesByActor.keySet())
                 {
-                    //Setup document
-                    Document lineNoteDoc = new Document(PageSize.LETTER.rotate());
-                    PdfWriter.getInstance(lineNoteDoc, new FileOutputStream(exportDir.getAbsolutePath() + "/" + actor + "LineNotes.pdf"));
-                    lineNoteDoc.open();
-
-                    //Add Title
-                    Paragraph title = new Paragraph(actor + " Line Notes For " + LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), titleFont);
-                    title.setAlignment(Paragraph.ALIGN_CENTER);
-                    lineNoteDoc.add(title); 
-                    lineNoteDoc.add(new Chunk(""));
-
-                    //Attach table to PDF and close the document
-                    lineNoteDoc.add(actorToTable.get(actor));                       
-                    lineNoteDoc.close();
+                    ArrayList<String[]> table = actorToTable.get(actor);
+                    String[][] array2D = new String[table.size()][];
+                    for (int i = 0; i < array2D.length; i++) 
+                    {     
+                        String[] row = table.get(i);
+                        array2D[i] = row; 
+                    }
+                    PDFTableGenerator.generatePDF(array2D, colWidths, exportDir.getAbsolutePath() + "/" + actor + "LineNotes.pdf", headerRow, actor);
                 }
             }
             catch (IOException e) 
-            {
-                e.printStackTrace();
-            }
-            catch(DocumentException e)
             {
                 e.printStackTrace();
             }
