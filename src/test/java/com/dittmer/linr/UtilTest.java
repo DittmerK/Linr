@@ -94,7 +94,7 @@ public class UtilTest {
         assertTrue(lineNotesFile.exists());
         try(BufferedReader br = new BufferedReader(new FileReader(lineNotesFile)))
         {
-            assertEquals("Alexa,1,2,Called Line,Test Line, ,1,TRUE", br.readLine());
+            assertEquals("Alexa;1;2;Called Line;Test Line; ;1;TRUE", br.readLine());
         } catch (FileNotFoundException e) {} catch(IOException e) {}
         lineNotesFile.delete();
     }

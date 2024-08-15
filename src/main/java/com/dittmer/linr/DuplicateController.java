@@ -66,7 +66,6 @@ public class DuplicateController
 
     public void merge()
     {
-        System.out.println("Merging");
         for(LineNote ln : App.lineNotes)
         {
             if(ln.equals(possibleDupes.get(currentIndex)))

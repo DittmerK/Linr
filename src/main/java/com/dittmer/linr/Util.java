@@ -129,7 +129,7 @@ public class Util
     public static void exportPDFs()
     {
         App.lineNotes.sort(new SortLineNotes());
-        Map<String, ArrayList<LineNote>> lineNotesByActor = new HashMap<String, ArrayList<LineNote>>();
+        Map<String, ArrayList<String[]>> lineNotesByActor = new HashMap<String, ArrayList<String[]>>();
         for(LineNote ln : App.lineNotes)
         {
             if(ln == null)
@@ -138,10 +138,10 @@ public class Util
             
             if(!lineNotesByActor.keySet().contains(ln.actor))
             {
-                lineNotesByActor.put(ln.actor, new ArrayList<LineNote>());
+                lineNotesByActor.put(ln.actor, new ArrayList<String[]>());
             }
-            if(!ln.fixed)
-                lineNotesByActor.get(ln.actor).add(ln);
+            if(ln.fixed == false)
+                lineNotesByActor.get(ln.actor).add(ln.addToTable());
 
         }
         //Open save window
@@ -152,34 +152,21 @@ public class Util
         if(jfcResult == JFileChooser.APPROVE_OPTION)
         {
             File exportDir = jfc.getSelectedFile();
-
-            
-            Map<String, ArrayList<String[]>> actorToTable = new HashMap<String, ArrayList<String[]>>();
             try
             {
                 float[] colWidths = new float[]{50,50,125,250,246,100.8898f};
                 String[] headerRow = new String[]{"Scene", "Page", "Action", "Line", "Notes", "Occurences"};
-                //Create document and table
-                for(String actor : lineNotesByActor.keySet())
-                {   
-                    ArrayList<String[]> table = new ArrayList<String[]>();
-                    actorToTable.put(actor, table);
-                }
-                //Add line notes to table
-                for (LineNote ln : App.lineNotes) 
-                {   
-                    actorToTable.get(ln.actor).add(ln.addToTable());
-                }
                 for(String actor : lineNotesByActor.keySet())
                 {
-                    ArrayList<String[]> table = actorToTable.get(actor);
+                    ArrayList<String[]> table = lineNotesByActor.get(actor);
                     String[][] array2D = new String[table.size()][];
                     for (int i = 0; i < array2D.length; i++) 
                     {     
                         String[] row = table.get(i);
                         array2D[i] = row; 
                     }
-                    PDFTableGenerator.generatePDF(array2D, colWidths, exportDir.getAbsolutePath() + "/" + actor + "LineNotes.pdf", headerRow, actor);
+                    if(array2D.length > 0)
+                        PDFTableGenerator.generatePDF(array2D, colWidths, exportDir.getAbsolutePath() + "/" + actor + "LineNotes.pdf", headerRow, actor);
                 }
             }
             catch (IOException e) 

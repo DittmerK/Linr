@@ -64,7 +64,7 @@ public class LineNote
 
     public String toString()
     {
-        return actor + "," + scene + "," + page + "," + action + "," + line + "," + notes + "," + occurences + "," + (fixed ? "TRUE" : "FALSE");
+        return actor + ";" + scene + ";" + page + ";" + action + ";" + line + ";" + notes + ";" + occurences + ";" + (fixed ? "TRUE" : "FALSE");
     }
 
     public String[] addToTable()
