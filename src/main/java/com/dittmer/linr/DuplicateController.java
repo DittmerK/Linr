@@ -49,7 +49,7 @@ public class DuplicateController
     {
         if(currentIndex == possibleDupes.size()-1)
         {
-            App.lineNotes.add(ln);
+            App.currentShow.lineNotes.add(ln);
             ((Stage)buttonMerge.getScene().getWindow()).close();
         }
         else
@@ -66,7 +66,7 @@ public class DuplicateController
 
     public void merge()
     {
-        for(LineNote ln : App.lineNotes)
+        for(LineNote ln : App.currentShow.lineNotes)
         {
             if(ln.equals(possibleDupes.get(currentIndex)))
             {

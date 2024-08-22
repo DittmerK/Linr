@@ -1,7 +1,6 @@
 package com.dittmer.linr;
 
 import java.io.*;
-
 import java.util.*;
 
 import javax.swing.JFileChooser;
@@ -75,7 +74,12 @@ public class Util
         return s;
     }
 
-    public static void loadSaveFile(String saveFileName)
+    public static void loadSave()
+    {
+        loadSave("shows.lnr");
+    }
+
+    public static void loadSave(String showsFileString)
     {
         //Create or find file
         File linrFile = new File(System.getProperty("user.home") + "/.linr");
@@ -84,24 +88,90 @@ public class Util
         } catch (Exception e) {
             e.printStackTrace();
         }
-        File lineNotesFile = new File(linrFile, saveFileName);
+        loadShowsFile(showsFileString, linrFile);
+        if(App.currentShow != null)
+        {
+            loadActorsFromSave(linrFile);
+            loadNotesFromSave(linrFile);
+        }
+    }
 
+    public static void loadShowsFile(String showsFileString, File linrFile)
+    {
+        File lineNotesFile = new File(linrFile, showsFileString);
+        App.shows = new ArrayList<Show>();
+        //Read file if it exists
+        try(BufferedReader br = new BufferedReader(new FileReader(lineNotesFile)))
+        {
+            String line;
+            int lastIndex = -1;
+            while((line = br.readLine()) != null)
+            {
+                if(lastIndex >= 0)
+                    App.shows.add(Show.parse(line));
+                else
+                    lastIndex = Integer.parseInt(line);
+            }
+            if(lastIndex >= 0)
+                App.currentShow = App.shows.get(lastIndex);
+        } catch (FileNotFoundException e) {} catch(IOException e) {}
+
+    }
+
+    public static void loadActorsFromSave(File linrFile)
+    {
+        for(Show show : App.shows)
+        {
+            loadActorsSaveFile(show, linrFile);   
+        }
+    }
+
+    public static void loadActorsSaveFile(Show show, File linrFile)
+    {
+        show.cast = new ArrayList<Actor>();
+        File lineNotesFile = new File(linrFile, show.castFile);
         //Read file if it exists
         try(BufferedReader br = new BufferedReader(new FileReader(lineNotesFile)))
         {
             String line;
             while((line = br.readLine()) != null)
             {
-                App.lineNotes.add(LineNote.parse(line, true));
+                show.cast.add(Actor.parse(line));
+            }
+        } catch (FileNotFoundException e) {} catch(IOException e) {}
+    }
+
+    public static void loadNotesFromSave(File linrFile)
+    {
+        for(Show show : App.shows)
+        {
+            loadNotesSaveFile(show, linrFile);   
+        }
+    }
+
+    public static void loadNotesSaveFile(Show show, File linrFile)
+    {
+        File lineNotesFile = new File(linrFile, show.notesFile);
+        show.lineNotes = new ArrayList<LineNote>();
+        //Read file if it exists
+        try(BufferedReader br = new BufferedReader(new FileReader(lineNotesFile)))
+        {
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                show.lineNotes.add(LineNote.parse(line, true));
             }
         } catch (FileNotFoundException e) {} catch(IOException e) {} catch(NumberFormatException e) {}
 
     }
 
-    public static void writeSaveFile(String saveFileName)
+    public static void writeSaveFiles()
     {
-        App.lineNotes.sort(new SortLineNotes());
-        //Write savefile and close
+        writeSaveFiles("shows.lnr");
+    }
+
+    public static void writeSaveFiles(String saveFileName)
+    {
         //Create or find file
         File linrFile = new File(System.getProperty("user.home") + "/.linr");
         try {
@@ -109,11 +179,87 @@ public class Util
         } catch (Exception e) {
             e.printStackTrace();
         }
+        writeShowsSaveFile(linrFile, saveFileName);
+        writeCastsToSave(linrFile);
+        writeNotesToSave(linrFile);
+    }
+
+    public static void writeShowsSaveFile(File linrFile, String saveFileName)
+    {
         File lineNotesFile = new File(linrFile, saveFileName);
         BufferedWriter bw;
         try {
             bw = new BufferedWriter(new FileWriter(lineNotesFile));
-            for(LineNote ln : App.lineNotes)
+            bw.write("" + App.shows.indexOf(App.currentShow));
+            bw.newLine();
+            for(Show show : App.shows)
+            {
+                bw.write(show.toSaveString());
+                bw.newLine();
+            }
+            bw.close();
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeCastsToSave(File linrFile)
+    {
+        for(Show show : App.shows)
+        {
+            writeActorsSaveFile(show, linrFile);
+        }
+    }
+
+    public static void writeActorsSaveFile(Show show, File linrFile)
+    {
+        File castFile = new File(linrFile, show.castFile);
+        BufferedWriter bw;
+        try {
+            bw = new BufferedWriter(new FileWriter(castFile));
+            for(Actor a : show.cast)
+            {
+                bw.write(a.toString());
+                bw.newLine();
+            }
+            bw.close();
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeNotesToSave(File linrFile)
+    {
+        for(Show show : App.shows)
+        {
+            writeNotesSaveFile(show, linrFile);   
+        }
+    }
+
+    public static void writeNotesSaveFile(Show show)
+    {
+        //Create or find file
+        File linrFile = new File(System.getProperty("user.home") + "/.linr");
+        try {
+            linrFile.mkdir();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeNotesSaveFile(show, linrFile);
+    }
+
+    public static void writeNotesSaveFile(Show show, File linrFile)
+    {
+        show.lineNotes.sort(new SortLineNotes());
+        File lineNotesFile = new File(linrFile, show.notesFile);
+        BufferedWriter bw;
+        try {
+            bw = new BufferedWriter(new FileWriter(lineNotesFile));
+            for(LineNote ln : show.lineNotes)
             {
                 bw.write(ln.toString());
                 bw.newLine();
@@ -128,9 +274,9 @@ public class Util
 
     public static void exportPDFs()
     {
-        App.lineNotes.sort(new SortLineNotes());
-        Map<String, ArrayList<String[]>> lineNotesByActor = new HashMap<String, ArrayList<String[]>>();
-        for(LineNote ln : App.lineNotes)
+        App.currentShow.lineNotes.sort(new SortLineNotes());
+        Map<Actor, ArrayList<String[]>> lineNotesByActor = new HashMap<Actor, ArrayList<String[]>>();
+        for(LineNote ln : App.currentShow.lineNotes)
         {
             if(ln == null)
                 continue;
@@ -156,7 +302,7 @@ public class Util
             {
                 float[] colWidths = new float[]{50,50,125,250,246,100.8898f};
                 String[] headerRow = new String[]{"Scene", "Page", "Action", "Line", "Notes", "Occurences"};
-                for(String actor : lineNotesByActor.keySet())
+                for(Actor actor : lineNotesByActor.keySet())
                 {
                     ArrayList<String[]> table = lineNotesByActor.get(actor);
                     String[][] array2D = new String[table.size()][];
@@ -166,7 +312,7 @@ public class Util
                         array2D[i] = row; 
                     }
                     if(array2D.length > 0)
-                        PDFTableGenerator.generatePDF(array2D, colWidths, exportDir.getAbsolutePath() + "/" + actor + "LineNotes.pdf", headerRow, actor);
+                        PDFTableGenerator.generatePDF(array2D, colWidths, exportDir.getAbsolutePath() + "/" + actor.name + "LineNotes.pdf", headerRow, actor.name);
                 }
             }
             catch (IOException e) 

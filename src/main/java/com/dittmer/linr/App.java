@@ -13,7 +13,10 @@ import javafx.stage.Stage;
 
 public class App extends Application{
     
-    public static ArrayList<LineNote> lineNotes;
+    public static String saveFileString = "shows.lnr";
+
+    public static ArrayList<Show> shows;
+    public static Show currentShow;
     
     public Scene scene;
 
@@ -22,29 +25,45 @@ public class App extends Application{
     public void start(Stage stage) throws Exception
     {
         stage.setTitle("Linr");
-
-        URL fxmlURL = App.class.getResource("fxml/enterline.fxml");
-        FXMLLoader loader = new FXMLLoader(fxmlURL);
-        Parent root = loader.load();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        stage.setResizable(false);
+        if(currentShow == null)
+        {
+            URL fxmlURL = App.class.getResource("fxml/newShow.fxml");
+            FXMLLoader loader = new FXMLLoader(fxmlURL);
+            Parent root = loader.load();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
+        else
+        {
+            URL fxmlURL = App.class.getResource("fxml/enterline.fxml");
+            FXMLLoader loader = new FXMLLoader(fxmlURL);
+            Parent root = loader.load();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     public static void main(String[] args)
     {
-        //Initialize arraylist
-        lineNotes = new ArrayList<>();
-
-        Util.loadSaveFile("notes.lnr");
+        Util.loadSave(saveFileString);
         launch(args);
     }
     
+
     @Override
     public void stop() 
     {
-        Util.writeSaveFile("notes.lnr");
+        Util.writeSaveFiles();
         
+    }
+
+    public static void reset() 
+    {
+        App.shows = null;
+        App.currentShow = null;
     }
 
     

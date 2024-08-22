@@ -2,7 +2,7 @@ package com.dittmer.linr;
 
 public class LineNote
 {
-    public String actor;
+    public Actor actor;
     public String scene;
     public int page;
     public String action;
@@ -14,7 +14,7 @@ public class LineNote
 
     public LineNote() {}
 
-    public LineNote(String actor, String scene, int page, String action, String line, String notes, int occurences,
+    public LineNote(Actor actor, String scene, int page, String action, String line, String notes, int occurences,
             boolean fixed) {
         this.actor = actor;
         this.scene = scene;
@@ -49,7 +49,9 @@ public class LineNote
         {
             LineNote ret = new LineNote();
             String[] values = input.split(";");
-            ret.actor = values[0];
+            ret.actor = App.currentShow.getActor(values[0]);
+            if(ret.actor == null)
+                return null;
             ret.scene = values[1];
             ret.page = Integer.parseInt(values[2].replaceAll(" ", ""));
             ret.action = values[3];
@@ -64,7 +66,7 @@ public class LineNote
 
     public String toString()
     {
-        return actor + ";" + scene + ";" + page + ";" + action + ";" + line + ";" + notes + ";" + occurences + ";" + (fixed ? "TRUE" : "FALSE");
+        return actor.name + ";" + scene + ";" + page + ";" + action + ";" + line + ";" + notes + ";" + occurences + ";" + (fixed ? "TRUE" : "FALSE");
     }
 
     public String[] addToTable()

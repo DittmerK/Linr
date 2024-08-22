@@ -10,6 +10,7 @@ module com.dittmer.linr
     requires transitive org.apache.pdfbox;
     requires org.apache.commons.text;
     requires org.apache.commons.lang3;
+    requires javafx.graphics;
 
     exports com.dittmer.linr;
 }

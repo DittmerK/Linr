@@ -30,7 +30,7 @@ dependencies {
 
 
 def currentOS = DefaultNativePlatform.currentOperatingSystem
-version = "0.0.5"
+version = "0.0.6"
 
 jlink {
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']

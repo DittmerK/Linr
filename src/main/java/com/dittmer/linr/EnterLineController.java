@@ -18,7 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.KeyCode;
@@ -42,7 +42,7 @@ public class EnterLineController implements Initializable
     @FXML
     public TextField textPage;
     @FXML
-    public ComboBox<String> comboAction;
+    public ChoiceBox<String> choiceAction;
     @FXML
     public TextArea textLine;
     @FXML
@@ -64,7 +64,8 @@ public class EnterLineController implements Initializable
         
         HamburgerBasicCloseTransition burgerTask1 = new HamburgerBasicCloseTransition(menuHamburger);
         burgerTask1.setRate(-1);
-        menuHamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+        menuHamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> 
+        {
             burgerTask1.setRate(burgerTask1.getRate() * -1);
             burgerTask1.play();
             if(menuDrawer.isOpened())
@@ -72,14 +73,16 @@ public class EnterLineController implements Initializable
             else
                 menuDrawer.open();
         });
+        
 
         ObservableList<String> actions = FXCollections.observableArrayList(LineNote.actions);
-        comboAction.setItems(actions);
+        choiceAction.setItems(actions);
 
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();
       
-            if (text.matches("\\d?")) { // this is the important line
+            if (text.matches("\\d?")) 
+            { // this is the important line
                 return change;
             }
              
@@ -87,33 +90,59 @@ public class EnterLineController implements Initializable
         };
         textPage.setTextFormatter(new TextFormatter<String>(filter));
 
-        textActor.setOnKeyPressed( evt ->{
-            if(evt.getCode().equals(KeyCode.TAB)){
+        textActor.setOnKeyPressed( evt ->
+        {
+            if(evt.getCode().equals(KeyCode.TAB))
+            {
                 textScene.requestFocus();
             }
         });
 
-        textScene.setOnKeyPressed( evt ->{
-            if(evt.getCode().equals(KeyCode.TAB)){
-                textPage.requestFocus();
+        textScene.setOnKeyPressed( evt ->
+        {
+            if(evt.getCode().equals(KeyCode.TAB))
+            {
+                if(evt.isShiftDown())
+                    textActor.requestFocus();
+                else
+                    textPage.requestFocus();            
             }
         });
 
-        textPage.setOnKeyPressed( evt ->{
-            if(evt.getCode().equals(KeyCode.TAB)){
-                comboAction.requestFocus();
+        textPage.setOnKeyPressed( evt ->
+        {
+            if(evt.getCode().equals(KeyCode.TAB))
+            {
+                if(evt.isShiftDown())
+                    textScene.requestFocus();
+                else
+                    choiceAction.requestFocus();
             }
         });
 
-        comboAction.setOnKeyPressed( evt ->{
-            if(evt.getCode().equals(KeyCode.TAB)){
-                textLine.requestFocus();
+        choiceAction.setOnKeyPressed( evt ->
+        {
+            if(evt.getCode().equals(KeyCode.TAB))
+            {
+                evt.consume();
+                if(evt.isShiftDown())
+                    textPage.requestFocus();
+                else
+                    textLine.requestFocus();
+            } 
+            else if (evt.getCode() == KeyCode.UP || evt.getCode() == KeyCode.DOWN) 
+            {
+                evt.consume();
             }
         });
 
-        textLine.setOnKeyPressed( evt ->{
+        textLine.setOnKeyPressed( evt ->
+        {
             if(evt.getCode().equals(KeyCode.TAB)){
-                textNotes.requestFocus();
+                if(evt.isShiftDown())
+                    choiceAction.requestFocus();
+                else
+                    textNotes.requestFocus();
             }
         });
         
@@ -121,31 +150,36 @@ public class EnterLineController implements Initializable
 
     public void submit()
     {
-        LineNote ln = new LineNote(Util.scrubLeadingAndTrailingSpace(textActor.getText()), Util.scrubLeadingAndTrailingSpace(textScene.getText()), Integer.parseInt(Util.scrubLeadingAndTrailingSpace(textPage.getText())), comboAction.getValue(), Util.scrubLeadingAndTrailingSpace(textLine.getText()), Util.scrubLeadingAndTrailingSpace(textNotes.getText()), 1, false);
+
+        Actor actor = App.currentShow.getActor(Util.scrubLeadingAndTrailingSpace(textActor.getText()));
+        if(actor != null)
+        {
+            LineNote ln = new LineNote(actor, Util.scrubLeadingAndTrailingSpace(textScene.getText()), Integer.parseInt(Util.scrubLeadingAndTrailingSpace(textPage.getText())), choiceAction.getValue(), Util.scrubLeadingAndTrailingSpace(textLine.getText()), Util.scrubLeadingAndTrailingSpace(textNotes.getText()), 1, false);
         
-        //Check for duplicate
-        ArrayList<LineNote> lineNotes = App.lineNotes;
-        ArrayList<LineNote> possibleDupes = new ArrayList<LineNote>();
-        for(int i = 0; i < lineNotes.size(); i++)
-        {
-            LineNote ln2 = lineNotes.get(i);
-            String lnline = ln.line.toLowerCase();
-            String ln2line = ln2.line.toLowerCase();
-            if(ln2.actor.equals(ln.actor) && ln2.scene.equals(ln.scene) && ln2.page == ln.page && ln2.action.equals(ln.action) && (ln2line.equals(lnline) || ln2line.contains(lnline) || lnline.contains(ln2line) || Util.similarity(lnline, ln2line) > .8))
+            //Check for duplicate
+            ArrayList<LineNote> lineNotes = App.currentShow.lineNotes;
+            ArrayList<LineNote> possibleDupes = new ArrayList<LineNote>();
+            for(int i = 0; i < lineNotes.size(); i++)
             {
-                possibleDupes.add(ln2);
+                LineNote ln2 = lineNotes.get(i);
+                String lnline = ln.line.toLowerCase();
+                String ln2line = ln2.line.toLowerCase();
+                if(ln2.actor.equals(ln.actor) && ln2.scene.equals(ln.scene) && ln2.page == ln.page && ln2.action.equals(ln.action) && (ln2line.equals(lnline) || ln2line.contains(lnline) || lnline.contains(ln2line) || Util.similarity(lnline, ln2line) > .8))
+                {
+                    possibleDupes.add(ln2);
                 
+                }
             }
-        }
-        if(possibleDupes.size() > 0)
-        {
-            Parent root;
+            if(possibleDupes.size() > 0)
+            {
+                Parent root;
                 try {
                     FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/duplicate.fxml"));
                     DuplicateController dupeController = new DuplicateController();
                     loader.setController(dupeController);
                     root = loader.load();
                     Stage stage = new Stage();
+                    stage.setResizable(false);
                     stage.setTitle("Duplicate Note");
                     stage.setScene(new Scene(root, 450, 300));
                     stage.show();
@@ -155,16 +189,17 @@ public class EnterLineController implements Initializable
                 catch (IOException e) {
                     e.printStackTrace();
                 }
-        }
-        else
-        {
-            lineNotes.add(ln);
+            }
+            else
+            {
+                lineNotes.add(ln);
+            }
         }
 
         textActor.setText("");
         textScene.setText("");
         textPage.setText("");
-        comboAction.setValue(null);
+        choiceAction.setValue(null);
         textLine.setText("");
         textNotes.setText("");
     }

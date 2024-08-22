@@ -21,6 +21,10 @@
     -fx-cursor: hand;
  }
 
+ .smallButton {
+   -fx-padding: 0 0 0 0;
+ }
+
  .comboBox {
     -fx-background-color: white;
     -fx-background-insets: 0,1,2,3;
