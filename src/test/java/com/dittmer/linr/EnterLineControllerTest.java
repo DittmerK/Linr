@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -29,13 +29,13 @@ public class EnterLineControllerTest
         elc.textPage = new TextField();
         elc.textLine = new TextArea();
         elc.textNotes = new TextArea();
-        elc.choiceAction = new ChoiceBox<String>();
+        elc.comboAction = new ComboBox<String>();
         elc.textActor.setText("Test");
         elc.textScene.setText("Scene");
         elc.textPage.setText("1");
         elc.textLine.setText("Line");
         elc.textNotes.setText("Notes");
-        elc.choiceAction.setValue("Called Line");
+        elc.comboAction.setValue("Called Line");
         elc.submit();
         ArrayList<LineNote> lineNotes = App.currentShow.lineNotes;
         boolean found = false;

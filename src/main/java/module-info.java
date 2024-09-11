@@ -5,6 +5,8 @@ module com.dittmer.linr
     requires javafx.swing;
     requires javafx.fxml;
     requires javafx.base;
+    requires jakarta.mail;
+    requires org.eclipse.angus.mail;
     requires transitive javafx.controls;
     requires transitive com.jfoenix;
     requires transitive org.apache.pdfbox;

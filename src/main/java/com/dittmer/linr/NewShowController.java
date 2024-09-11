@@ -21,6 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
 public class NewShowController implements Initializable
@@ -48,8 +49,6 @@ public class NewShowController implements Initializable
     public void initialize(URL arg0, ResourceBundle arg1) 
     {
         tableCast.setItems(castData);
-        if(App.currentShow != null && App.currentShow.cast != null)
-            App.currentShow.cast.forEach(a -> castData.add(a));
         tableCast.setEditable(true);
         // allows the individual cells to be selected
         tableCast.getSelectionModel().cellSelectionEnabledProperty().set(true);
@@ -63,16 +62,22 @@ public class NewShowController implements Initializable
             }
             else if (event.getCode() == KeyCode.RIGHT ||
                 event.getCode() == KeyCode.TAB) {
-                tableCast.getSelectionModel().selectNext();
+                tableCast.getSelectionModel().selectRightCell();
                 event.consume();
             } 
             else if (event.getCode() == KeyCode.LEFT) 
             {
-                // work around due to
-                // TableView.getSelectionModel().selectPrevious() due to a bug
-                // stopping it from working on
-                // the first column in the last row of the table
-                selectPrevious();
+                tableCast.getSelectionModel().selectLeftCell();
+                event.consume();
+            }
+            else if(event.getCode() == KeyCode.UP && tableCast.getSelectionModel().getSelectedIndex() > 0)
+            {
+                tableCast.getSelectionModel().selectAboveCell();
+                event.consume();
+            }
+            else if(event.getCode() == KeyCode.DOWN && tableCast.getSelectionModel().getSelectedIndex() < castData.size()-1)
+            {
+                tableCast.getSelectionModel().selectBelowCell();
                 event.consume();
             }
         });
@@ -125,42 +130,6 @@ public class NewShowController implements Initializable
         tableCast.edit(focusedCell.getRow(), focusedCell.getTableColumn());
     }
 
-    @SuppressWarnings("unchecked")
-    private void selectPrevious() 
-    {
-        if (tableCast.getSelectionModel().isCellSelectionEnabled()) 
-        {
-            // in cell selection mode, we have to wrap around, going from
-            // right-to-left, and then wrapping to the end of the previous line
-            TablePosition < Actor, ? > pos = tableCast.getFocusModel()
-                .getFocusedCell();
-            if (pos.getColumn() - 1 >= 0) {
-                // go to previous row
-                tableCast.getSelectionModel().select(pos.getRow(),
-                getTableColumn(pos.getTableColumn(), -1));
-            } else if (pos.getRow() < tableCast.getItems().size()) {
-                // wrap to end of previous row
-                tableCast.getSelectionModel().select(pos.getRow() - 1,
-                tableCast.getVisibleLeafColumn(
-                tableCast.getVisibleLeafColumns().size() - 1));
-            }
-        } else {
-            int focusIndex = tableCast.getFocusModel().getFocusedIndex();
-            if (focusIndex == -1) {
-                tableCast.getSelectionModel().select(tableCast.getItems().size() - 1);
-            } else if (focusIndex > 0) {
-                tableCast.getSelectionModel().select(focusIndex - 1);
-            }
-        }
-    }
-
-    private TableColumn < Actor, ? > getTableColumn(
-        final TableColumn < Actor, ? > column, int offset) {
-        int columnIndex = tableCast.getVisibleLeafIndex(column);
-        int newColumnIndex = columnIndex + offset;
-        return tableCast.getVisibleLeafColumn(newColumnIndex);
-    }
-
     public void submit()
     {
         ArrayList<Actor> cast = new ArrayList<>();
@@ -182,9 +151,20 @@ public class NewShowController implements Initializable
             Stage stage = new Stage();
             stage.setResizable(false);
             stage.setScene(new Scene(root));
+            stage.getIcons().add(new Image(App.class.getResourceAsStream("icons/dittmer.png")));
             stage.show();
             Stage currStage = (Stage)textShow.getScene().getWindow();
             currStage.close();
+            if(UserSettings.getName() == null)
+            {
+                loader = new FXMLLoader(App.class.getResource("fxml/settings.fxml"));
+                root = loader.load();
+                stage = new Stage();
+                stage.setResizable(false);
+                stage.setScene(new Scene(root));
+                stage.getIcons().add(new Image(App.class.getResourceAsStream("icons/dittmer.png")));
+                stage.show();
+            }
                     
         }
         catch (IOException e) {

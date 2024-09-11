@@ -3,12 +3,19 @@
  */
 package com.dittmer.linr;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
 
-public class AppTest {
+
+public class AppTest
+{
     
     public AppTest() {}
     
@@ -18,12 +25,50 @@ public class AppTest {
         //Just to increase code coverage
         App.reset();
         App.saveFileString = "apptestshows.lnr";
-        App.main(null);
-
-        //Cleanup
+        //Create testdata file
+        BufferedWriter bws;
+        BufferedWriter bwa;
+        BufferedWriter bwn;
+        //Create or find file
         File linrFile = new File(System.getProperty("user.home") + "/.linr");
-        new File(linrFile, "apptestshows.lnr").delete();
-        new File(linrFile, App.currentShow.castFile).delete();
-        new File(linrFile, App.currentShow.notesFile).delete();
+        try {
+            linrFile.mkdir();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        App.reset();
+        File showsFile = new File(linrFile, "apptestshows.lnr");
+        File actorsFile = new File(linrFile, "actors.lnr");
+        File lineNotesFile = new File(linrFile, "notes.lnr");
+        try {
+            bws = new BufferedWriter(new FileWriter(showsFile));
+            bws.write("0");
+            bws.newLine();
+            bws.write("Test show;actors.lnr;notes.lnr");
+            bws.close();
+            bwa = new BufferedWriter(new FileWriter(actorsFile));
+            bwa.write("Alexa;alexa@email.com");
+            bwa.newLine();
+            bwa.close();
+            bwn = new BufferedWriter(new FileWriter(lineNotesFile));
+            bwn.write("Alexa;1;2;Called Line;Test Line;;1;FALSE");
+            bwn.newLine();
+            bwn.close();
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+            assertFalse(true);//Fail out
+        }        
+
+        App.main(null);
+        
+        //Cleanup
+        showsFile.delete();
+        for(Show show : App.shows)
+        {
+            new File(linrFile, show.castFile).delete();
+            new File(linrFile, show.notesFile).delete();
+        }
     }
 }

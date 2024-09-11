@@ -1,9 +1,24 @@
 package com.dittmer.linr;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 
 public class Util 
@@ -76,10 +91,10 @@ public class Util
 
     public static void loadSave()
     {
-        loadSave("shows.lnr");
+        loadSave("usersettings.lnr", "shows.lnr");
     }
 
-    public static void loadSave(String showsFileString)
+    public static void loadSave(String settingsFileString, String showsFileString)
     {
         //Create or find file
         File linrFile = new File(System.getProperty("user.home") + "/.linr");
@@ -88,6 +103,7 @@ public class Util
         } catch (Exception e) {
             e.printStackTrace();
         }
+        loadUserSettingsFile(linrFile, settingsFileString);
         loadShowsFile(showsFileString, linrFile);
         if(App.currentShow != null)
         {
@@ -96,12 +112,26 @@ public class Util
         }
     }
 
+    public static void loadUserSettingsFile(File linrFile, String saveFileName)
+    {
+        File settingsFile = new File(linrFile, saveFileName);
+        try(BufferedReader br = new BufferedReader(new FileReader(settingsFile)))
+        {
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                UserSettings.parse(line);
+            }
+            br.close();
+        } catch (FileNotFoundException e) {} catch(IOException e) {}
+    }
+
     public static void loadShowsFile(String showsFileString, File linrFile)
     {
-        File lineNotesFile = new File(linrFile, showsFileString);
+        File showsFile = new File(linrFile, showsFileString);
         App.shows = new ArrayList<Show>();
         //Read file if it exists
-        try(BufferedReader br = new BufferedReader(new FileReader(lineNotesFile)))
+        try(BufferedReader br = new BufferedReader(new FileReader(showsFile)))
         {
             String line;
             int lastIndex = -1;
@@ -114,42 +144,54 @@ public class Util
             }
             if(lastIndex >= 0)
                 App.currentShow = App.shows.get(lastIndex);
+            br.close();
         } catch (FileNotFoundException e) {} catch(IOException e) {}
 
     }
 
     public static void loadActorsFromSave(File linrFile)
     {
-        for(Show show : App.shows)
+        Iterator<Show> showIter = App.shows.iterator();
+        while(showIter.hasNext())
         {
-            loadActorsSaveFile(show, linrFile);   
+            try {
+                loadActorsSaveFile(showIter.next(), linrFile);
+            } catch (FileNotFoundException e) {
+                showIter.remove();
+            }   
         }
     }
 
-    public static void loadActorsSaveFile(Show show, File linrFile)
+    public static void loadActorsSaveFile(Show show, File linrFile) throws FileNotFoundException
     {
         show.cast = new ArrayList<Actor>();
-        File lineNotesFile = new File(linrFile, show.castFile);
+        File castFile = new File(linrFile, show.castFile);
         //Read file if it exists
-        try(BufferedReader br = new BufferedReader(new FileReader(lineNotesFile)))
+        try(BufferedReader br = new BufferedReader(new FileReader(castFile)))
         {
             String line;
             while((line = br.readLine()) != null)
             {
                 show.cast.add(Actor.parse(line));
             }
-        } catch (FileNotFoundException e) {} catch(IOException e) {}
+            br.close();
+        } catch(IOException e) {}
     }
 
     public static void loadNotesFromSave(File linrFile)
     {
-        for(Show show : App.shows)
+        Iterator<Show> showIter = App.shows.iterator();
+        while(showIter.hasNext())
         {
-            loadNotesSaveFile(show, linrFile);   
+            try {
+                loadNotesSaveFile(showIter.next(), linrFile);
+            } catch (FileNotFoundException e) {
+                showIter.remove();
+            }   
         }
     }
 
-    public static void loadNotesSaveFile(Show show, File linrFile)
+    public static void loadNotesSaveFile(Show show, File linrFile) throws FileNotFoundException
     {
         File lineNotesFile = new File(linrFile, show.notesFile);
         show.lineNotes = new ArrayList<LineNote>();
@@ -161,16 +203,17 @@ public class Util
             {
                 show.lineNotes.add(LineNote.parse(line, true));
             }
-        } catch (FileNotFoundException e) {} catch(IOException e) {} catch(NumberFormatException e) {}
+            br.close();
+        } catch(IOException e) {} catch(NumberFormatException e) {}
 
     }
 
     public static void writeSaveFiles()
     {
-        writeSaveFiles("shows.lnr");
+        writeSaveFiles("usersettings.lnr", "shows.lnr");
     }
 
-    public static void writeSaveFiles(String saveFileName)
+    public static void writeSaveFiles(String settingsFileName, String saveFileName)
     {
         //Create or find file
         File linrFile = new File(System.getProperty("user.home") + "/.linr");
@@ -179,9 +222,25 @@ public class Util
         } catch (Exception e) {
             e.printStackTrace();
         }
+        writeSettingsFile(linrFile, settingsFileName);
         writeShowsSaveFile(linrFile, saveFileName);
         writeCastsToSave(linrFile);
         writeNotesToSave(linrFile);
+    }
+
+    public static void writeSettingsFile(File linrFile, String saveFileName)
+    {
+        File lineNotesFile = new File(linrFile, saveFileName);
+        BufferedWriter bw;
+        try {
+            bw = new BufferedWriter(new FileWriter(lineNotesFile));
+            bw.write(new UserSettings().toString());
+            bw.close();
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void writeShowsSaveFile(File linrFile, String saveFileName)
@@ -321,5 +380,32 @@ public class Util
             }
         }
 
+    }
+
+    public static void alert(String alert)
+    {
+        if(Thread.currentThread().getName().equals("JavaFX Application Thread"))
+        {
+            Parent root;
+            try {
+                FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/alert.fxml"));
+                AlertController alertController = new AlertController();
+                loader.setController(alertController);
+                root = loader.load();
+                Stage stage = new Stage();
+                stage.setResizable(false);
+                stage.setScene(new Scene(root));
+                stage.getIcons().add(new Image(App.class.getResourceAsStream("icons/dittmer.png")));
+                stage.show();
+                alertController.text.setText(alert);
+
+            } catch (IOException e1) 
+            {
+                e1.printStackTrace();
+            }
+        } else
+        {
+            System.out.println(alert);
+        }
     }
 }

@@ -18,9 +18,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -42,7 +43,7 @@ public class EnterLineController implements Initializable
     @FXML
     public TextField textPage;
     @FXML
-    public ChoiceBox<String> choiceAction;
+    public ComboBox<String> comboAction;
     @FXML
     public TextArea textLine;
     @FXML
@@ -76,7 +77,7 @@ public class EnterLineController implements Initializable
         
 
         ObservableList<String> actions = FXCollections.observableArrayList(LineNote.actions);
-        choiceAction.setItems(actions);
+        comboAction.setItems(actions);
 
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();
@@ -116,11 +117,11 @@ public class EnterLineController implements Initializable
                 if(evt.isShiftDown())
                     textScene.requestFocus();
                 else
-                    choiceAction.requestFocus();
+                    comboAction.requestFocus();
             }
         });
 
-        choiceAction.setOnKeyPressed( evt ->
+        comboAction.setOnKeyPressed( evt ->
         {
             if(evt.getCode().equals(KeyCode.TAB))
             {
@@ -140,7 +141,7 @@ public class EnterLineController implements Initializable
         {
             if(evt.getCode().equals(KeyCode.TAB)){
                 if(evt.isShiftDown())
-                    choiceAction.requestFocus();
+                    comboAction.requestFocus();
                 else
                     textNotes.requestFocus();
             }
@@ -154,7 +155,7 @@ public class EnterLineController implements Initializable
         Actor actor = App.currentShow.getActor(Util.scrubLeadingAndTrailingSpace(textActor.getText()));
         if(actor != null)
         {
-            LineNote ln = new LineNote(actor, Util.scrubLeadingAndTrailingSpace(textScene.getText()), Integer.parseInt(Util.scrubLeadingAndTrailingSpace(textPage.getText())), choiceAction.getValue(), Util.scrubLeadingAndTrailingSpace(textLine.getText()), Util.scrubLeadingAndTrailingSpace(textNotes.getText()), 1, false);
+            LineNote ln = new LineNote(actor, Util.scrubLeadingAndTrailingSpace(textScene.getText()), Integer.parseInt(Util.scrubLeadingAndTrailingSpace(textPage.getText())), comboAction.getValue(), Util.scrubLeadingAndTrailingSpace(textLine.getText()), Util.scrubLeadingAndTrailingSpace(textNotes.getText()), 1, false);
         
             //Check for duplicate
             ArrayList<LineNote> lineNotes = App.currentShow.lineNotes;
@@ -182,6 +183,7 @@ public class EnterLineController implements Initializable
                     stage.setResizable(false);
                     stage.setTitle("Duplicate Note");
                     stage.setScene(new Scene(root, 450, 300));
+                    stage.getIcons().add(new Image(App.class.getResourceAsStream("icons/dittmer.png")));
                     stage.show();
                     dupeController.setArgs(ln, possibleDupes);
                     
@@ -199,7 +201,7 @@ public class EnterLineController implements Initializable
         textActor.setText("");
         textScene.setText("");
         textPage.setText("");
-        choiceAction.setValue(null);
+        comboAction.setValue(null);
         textLine.setText("");
         textNotes.setText("");
     }

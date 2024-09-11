@@ -78,7 +78,7 @@ public class UtilTest {
         }        
 
         //Run code and test
-        Util.loadSave("utiltestshows.lnr");
+        Util.loadSave("utiltestsettings.lnr", "utiltestshows.lnr");
 
         assertNotNull(App.currentShow);
         assertNotNull(App.currentShow.cast);
@@ -120,7 +120,7 @@ public class UtilTest {
         assertFalse(showsFile.exists());
         assertFalse(castFile.exists());
         assertFalse(notesFile.exists());
-        Util.writeSaveFiles("utiltestshows.lnr");
+        Util.writeSaveFiles("utiltestsettings.lnr", "utiltestshows.lnr");
         assertTrue(linrFile.exists());
         assertTrue(showsFile.exists());
         assertTrue(castFile.exists());
