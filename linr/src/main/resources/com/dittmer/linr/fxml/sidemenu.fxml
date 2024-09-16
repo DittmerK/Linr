@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="150.0" stylesheets="@../css/sidemenu.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dittmer.linr.SideMenuController">
+   <children>
+      <VBox fx:id="vboxSave" alignment="CENTER" layoutX="27.0" layoutY="8.0" prefHeight="70.0" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+         <children>
+            <Button fx:id="buttonSave" mnemonicParsing="false" onMouseClicked="#save" text="Save">
+               <styleClass>
+                  <String fx:value="sideMenuButton" />
+               </styleClass>
+            </Button>
+         </children>
+      </VBox>
+      <VBox fx:id="vboxExport" alignment="CENTER" layoutX="37.0" layoutY="18.0" prefHeight="70.0" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
+         <children>
+            <Button fx:id="buttonExport" mnemonicParsing="false" onMouseClicked="#export" text="Export">
+               <styleClass>
+                  <String fx:value="sideMenuButton" />
+               </styleClass>
+            </Button>
+         </children>
+      </VBox>
+      <VBox fx:id="vboxEmail" alignment="CENTER" layoutY="190.0" prefHeight="70.0" prefWidth="150.0" AnchorPane.topAnchor="190.0">
+         <children>
+            <Button fx:id="buttonEmail" mnemonicParsing="false" onMouseClicked="#email" styleClass="sideMenuButton" text="Send Notes">
+               <font>
+                  <Font size="10.0" />
+               </font></Button>
+         </children>
+      </VBox>
+      <VBox fx:id="vboxActive" alignment="CENTER" layoutX="37.0" layoutY="18.0" prefHeight="70.0" prefWidth="150.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <ChoiceBox fx:id="choiceShow" prefWidth="100.0" />
+            <Label text="Active Show" textFill="WHITE" />
+         </children>
+      </VBox>
+      <VBox fx:id="vboxNew" alignment="CENTER" layoutX="37.0" layoutY="18.0" prefHeight="70.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Button fx:id="buttonNewShow" mnemonicParsing="false" onMouseClicked="#newShow" styleClass="sideMenuButton" text="New Show" />
+         </children>
+      </VBox>
+      <Button fx:id="buttonSettings" layoutX="110.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#settings" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: transparent;">
+         <styleClass>
+            <String fx:value="button" />
+            <String fx:value="smallButton" />
+         </styleClass>
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/dittmer%20-%20white.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+</AnchorPane>

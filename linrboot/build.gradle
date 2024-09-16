@@ -1,0 +1,41 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+plugins {
+    id 'java-library'
+    id 'application'
+    id 'org.javamodularity.moduleplugin' version '1.8.9'
+    id 'org.beryx.jlink' version '3.0.1'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = '22.0.1'
+    configuration = 'implementation'
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.media', 'javafx.swing']
+}
+
+dependencies {
+    
+    implementation 'org.apache.pdfbox:pdfbox:3.0.2'
+    implementation 'com.jfoenix:jfoenix:9.0.10'
+    implementation 'org.apache.commons:commons-text:1.12.0'
+    implementation 'org.apache.commons:commons-lang3:3.16.0'
+    implementation 'jakarta.mail:jakarta.mail-api:2.1.3'
+    implementation 'org.eclipse.angus:angus-mail:2.0.3'
+    implementation 'org.update4j:update4j:1.5.9'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnit()
+}
+
+application {
+    mainModule = "com.dittmer.linrboot"
+    mainClass = "com.dittmer.linrboot.App"
+}

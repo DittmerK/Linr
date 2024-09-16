@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXDrawer?>
+<?import com.jfoenix.controls.JFXHamburger?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dittmer.linr.EnterLineController">
+   <children>
+      <JFXDrawer fx:id="menuDrawer" defaultDrawerSize="150.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" resizableOnDrag="true" resizeContent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <JFXHamburger fx:id="menuHamburger" layoutX="555.0" layoutY="14.0" prefHeight="45.0" prefWidth="45.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+      <TextField fx:id="textActor" layoutX="150.0" layoutY="23.0" promptText="Actor" />
+      <TextField fx:id="textScene" layoutX="320.0" layoutY="23.0" prefHeight="25.0" prefWidth="86.0" promptText="Scene" />
+      <TextField fx:id="textPage" layoutX="435.0" layoutY="23.0" prefHeight="25.0" prefWidth="51.0" promptText="Page" />
+      <TextArea fx:id="textLine" layoutX="150.0" layoutY="103.0" prefHeight="136.0" prefWidth="336.0" promptText="Line" />
+      <TextArea fx:id="textNotes" layoutX="150.0" layoutY="250.0" prefHeight="136.0" prefWidth="336.0" promptText="Notes" />
+      <Button fx:id="buttonSubmit" layoutX="488.0" layoutY="334.0" mnemonicParsing="false" onMouseClicked="#submit" text="Submit" />
+      <ComboBox fx:id="comboAction" layoutX="150.0" layoutY="58.0" prefWidth="150.0" promptText="Action" />
+   </children>
+</AnchorPane>

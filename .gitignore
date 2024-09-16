@@ -1,0 +1,9 @@
+linr/bin
+linr/build
+linrboot/bin
+linrboot/build
+.gradle
+gradle
+.vscode
+gradlew
+gradlew.bat
