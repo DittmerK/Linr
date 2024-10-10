@@ -1,8 +1,14 @@
 package com.dittmer.linr;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+
+import com.dittmer.linr.objects.Show;
+import com.dittmer.linr.objects.UserSettings;
+import com.dittmer.linr.util.AutoUpdater;
+import com.dittmer.linr.util.Util;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -30,12 +36,12 @@ public class App extends Application{
         stage.setResizable(false);
         if(currentShow == null || App.shows.isEmpty())
         {
-            URL fxmlURL = App.class.getResource("fxml/newShow.fxml");
+            URL fxmlURL = App.class.getResource("/com/dittmer/linr/fxml/newShow.fxml");
             FXMLLoader loader = new FXMLLoader(fxmlURL);
             Parent root = loader.load();
             scene = new Scene(root);
             stage.setScene(scene);
-            stage.getIcons().add(new Image(App.class.getResourceAsStream("icons/dittmer.png")));
+            stage.getIcons().add(new Image(App.class.getResourceAsStream("/com/dittmer/linr/icons/dittmer.png")));
             stage.show();
         }
         else
@@ -45,25 +51,19 @@ public class App extends Application{
             Parent root = loader.load();
             scene = new Scene(root);
             stage.setScene(scene);
-            stage.getIcons().add(new Image(App.class.getResourceAsStream("icons/dittmer.png")));
+            stage.getIcons().add(new Image(App.class.getResourceAsStream("/com/dittmer/linr/icons/dittmer.png")));
             stage.show();
             if(UserSettings.getName() == null)
             {
-                loader = new FXMLLoader(App.class.getResource("fxml/settings.fxml"));
+                loader = new FXMLLoader(App.class.getResource("/com/dittmer/linr/fxml/settings.fxml"));
                 root = loader.load();
                 stage = new Stage();
                 stage.setResizable(false);
                 stage.setScene(new Scene(root));
-                stage.getIcons().add(new Image(App.class.getResourceAsStream("icons/dittmer.png")));
+                stage.getIcons().add(new Image(App.class.getResourceAsStream("/com/dittmer/linr/icons/dittmer.png")));
                 stage.show();
             }
         }
-    }
-
-    public static void main(String[] args)
-    {
-        Util.loadSave(settingsFileString, saveFileString);
-        launch(args);
     }
     
 
@@ -71,7 +71,14 @@ public class App extends Application{
     public void stop() 
     {
         Util.writeSaveFiles();
-        
+        try 
+        {
+            if(AutoUpdater.requiresUpdate())
+                AutoUpdater.performUpdate();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public static void reset() 

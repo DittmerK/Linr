@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+import com.dittmer.linr.objects.Show;
+
 
 
 public class AppTest
@@ -61,7 +63,7 @@ public class AppTest
             assertFalse(true);//Fail out
         }        
 
-        App.main(null);
+        Launcher.main(null);
         
         //Cleanup
         showsFile.delete();

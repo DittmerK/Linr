@@ -1,0 +1,31 @@
+AnchorPane {
+    -fx-background-color: #3e98ff;
+    background-color: #3e98ff;
+}
+.sideMenuButton {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 12 15 12 15;
+    padding: 12 15 12 15;
+    -fx-text-fill: #3e98ff;
+    -fx-font-size: 12px;
+    font-size: 12px;
+    width: 100;
+ }
+
+ .smallButton {
+    -fx-padding: 0 0 0 0;
+    padding: 0 0 0 0;
+  }
+
+  ChoiceBox {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 6 6 6 6;
+    padding: 6 6 6 6;
+    -fx-font-size: 12px;
+    font-size: 12px;
+ }

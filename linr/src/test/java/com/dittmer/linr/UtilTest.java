@@ -6,6 +6,10 @@ package com.dittmer.linr;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+import com.dittmer.linr.controllers.SideMenuController;
+import com.dittmer.linr.objects.*;
+import com.dittmer.linr.util.Util;
+
 import java.io.*;
 import java.util.ArrayList;
 

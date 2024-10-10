@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="150.0" stylesheets="@../css/sidemenu.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dittmer.linr.SideMenuController">
+<AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="150.0" stylesheets="@../css/sidemenu.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dittmer.linr.controllers.SideMenuController">
    <children>
       <VBox fx:id="vboxSave" alignment="CENTER" layoutX="27.0" layoutY="8.0" prefHeight="70.0" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
          <children>

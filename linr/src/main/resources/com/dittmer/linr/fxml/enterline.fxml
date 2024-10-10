@@ -8,7 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dittmer.linr.EnterLineController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dittmer.linr.controllers.EnterLineController">
    <children>
       <JFXDrawer fx:id="menuDrawer" defaultDrawerSize="150.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" resizableOnDrag="true" resizeContent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <JFXHamburger fx:id="menuHamburger" layoutX="555.0" layoutY="14.0" prefHeight="45.0" prefWidth="45.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />

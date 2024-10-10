@@ -3,6 +3,11 @@ package com.dittmer.linr;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+import com.dittmer.linr.controllers.EnterLineController;
+import com.dittmer.linr.objects.Actor;
+import com.dittmer.linr.objects.LineNote;
+import com.dittmer.linr.objects.Show;
+
 import java.util.ArrayList;
 
 import javafx.embed.swing.JFXPanel;

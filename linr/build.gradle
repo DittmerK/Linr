@@ -4,7 +4,7 @@ plugins {
     id 'java-library'
     id 'application'
     id 'org.javamodularity.moduleplugin' version '1.8.9'
-    id 'org.beryx.jlink' version '3.0.1'
+    id 'org.beryx.runtime' version '1.13.1'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
@@ -35,62 +35,19 @@ dependencies {
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 version = "1.0"
 
-jlink {
-    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
-    launcher {
-        name = 'Linr'
-    }
-    forceMerge('log4j-api')
-    if (currentOS.isWindows()) {
-        jpackage {
-            installerType = 'msi'
-            icon = "${project.rootDir}/src/main/resources/com/dittmer/linr/icons/linr.ico"
-            installerOptions = [
-                    '--win-menu',
-                    '--win-menu-group', 'DittmerLabs',
-                    '--win-shortcut-prompt',
-                    '--win-upgrade-uuid', '52910e5b-eb4c-4d58-b892-a2679656861c',
-                    '--win-dir-chooser',
-                    '--copyright', 'Copyright (c) 2024 DittmerLab',
-                    '--description', 'Linr is a new way of taking line notes for theatrical productions.',
-                    '--vendor', 'DittmerLabs',
-                    '--license-file', 'LICENSE.md',
-                    '--app-version', "${project.version.toString()}",
-                    '--about-url', 'https://github.com/DittmerK',
-            ]
-        }
-    } else if (currentOS.isLinux()) {
-        jpackage {
-            installerType = 'rpm'
-            icon = "${project.rootDir}/src/main/resources/com/dittmer/linr/icons/Linr.png"
-            installerOptions = [
-                    '--linux-shortcut',
-                    '--linux-package-name', 'com.dittmer.linr',
-                    '--linux-rpm-license-type', 'AGPL',
-                    '--copyright', 'Copyright (c) 2024 DittmerLabs',
-                    '--description', 'Linr is a new way of taking line notes for theatrical productions.',
-                    '--vendor', 'DittmerLabs',
-                    '--license-file', 'LICENSE.md',
-                    '--app-version', "${project.version.toString()}",
-                    '--about-url', 'https://github.com/DittmerK/'
-            ]
-        }
-    } else if (currentOS.isMacOsX()) {
-        jpackage {
-            installerType = 'dmg'
-            icon = "${project.rootDir}/src/main/resources/com/dittmer/linr/icons/Linr.png"
-            installerOptions = [
-                    '--mac-package-name', 'Linr',
-                    '--mac-package-identifier', 'com.dittmer.linr',
-                    '--mac-app-category', 'public.app-category.music',
-                    '--copyright', 'Copyright (c) 2024 DittmerLabs',
-                    '--description', 'Linr is a new way of taking line notes for theatrical productions.',
-                    '--vendor', 'DittmerLabs',
-                    '--license-file', 'LICENSE.md',
-                    '--app-version', "${project.version.toString()}",
-                    '--about-url', 'https://github.com/DittmerK/'
-            ]
-        }
+runtime {
+    options = ['--strip-debug', '--no-header-files', '--no-man-pages']
+    modules = ['java.xml', 'java.base', 'java.scripting', 'java.logging', 'jdk.zipfs','java.desktop', 'jdk.unsupported', 'jdk.unsupported.desktop']
+    jpackage {
+        outputDir = 'jpackage'
+        // imageOutputDir = file("$buildDir/my-packaging-image")
+        // installerOutputDir = file("$buildDir/my-packaging-installer")
+        imageName = 'Linr'
+        imageOptions = ['--win-console']
+        skipInstaller = false
+        installerName = 'Linr'
+        installerType = 'msi'
+        installerOptions = ['--win-menu', '--win-shortcut']
     }
 }
 
@@ -99,6 +56,5 @@ test {
 }
 
 application {
-    mainModule = "com.dittmer.linr"
-    mainClass = "com.dittmer.linr.App"
+    mainClass = "com.dittmer.linr.Launcher"
 }

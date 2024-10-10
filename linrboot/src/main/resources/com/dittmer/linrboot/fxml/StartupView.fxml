@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="450.0" type="StackPane" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox fx:id="progressContainer" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="400.0" StackPane.alignment="CENTER">
+         <children>
+            <Label fx:id="labelStatus" text="Label" StackPane.alignment="CENTER_LEFT" />
+            <Pane id="paneSecondary" fx:id="paneSecondary" maxHeight="-Infinity" prefHeight="5.0" StackPane.alignment="CENTER_LEFT" />
+            <Label text="Overall Progress:" StackPane.alignment="CENTER_LEFT" />
+            <Pane id="panePrimary" fx:id="panePrimary" maxHeight="-Infinity" prefHeight="5.0" StackPane.alignment="CENTER_LEFT" />
+         </children>
+         <padding>
+            <Insets top="30.0" />
+         </padding>
+      </VBox>
+   </children>
+</fx:root>

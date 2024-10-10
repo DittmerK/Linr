@@ -6,6 +6,10 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
+import com.dittmer.linr.objects.Actor;
+import com.dittmer.linr.objects.LineNote;
+import com.dittmer.linr.objects.Show;
+
 public class LineNoteTest 
 {
 

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.dittmer.linr.controllers.UserSettingsController;
+
 public class UserSettingsControllerTest 
 {
     @Test

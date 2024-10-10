@@ -1,0 +1,44 @@
+.jfx-hamburger StackPane {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 7px;
+ }
+ 
+ .jfx-hamburger {
+    -fx-background-color: #3e98ff;
+    background-color: #3e98ff;
+    -fx-spacing: 5;
+    -fx-cursor: hand;
+    cursor: hand;
+ }
+
+ .button {
+    -fx-background-color: #3e98ff;
+    background-color: #3e98ff;
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 12 30 12 30;
+    padding: 12 30 12 30;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    font-size: 12px;
+    -fx-cursor: hand;
+    cursor: hand;
+ }
+
+ .smallButton {
+   -fx-padding: 0 0 0 0;
+   padding: 0 0 0 0;
+ }
+
+ ComboBox {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 6 6 6 6;
+    padding: 6 6 6 6;
+    -fx-font-size: 12px;
+    font-size: 12px;
+ }
