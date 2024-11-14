@@ -39,23 +39,23 @@ public class AutoUpdater
     //TODO: Other operating systems
     public static void performUpdate() throws IOException 
     {
-        Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "..\\runtime\\bin\\java", "-jar linrboot.jar", STABLE_UPDATE_CONFIG});
+        Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "..\\runtime\\bin\\java", "-jar linrboot-1.0.jar", STABLE_UPDATE_CONFIG});
         System.exit(0);
     }
 
     //Generate
     private static void generateConfig() throws IOException {
-        File imageDir = new File("linr\\build\\jpackage\\Linr\\app");
+        File imageDir = new File("linr\\build\\my-packaging-image\\Linr\\app");
         imageDir.mkdir();
         Configuration build = Configuration.builder()
-                .baseUri("https://github.com/DittmerK/Linr/blob/main/releases/")
+                .baseUri("https://github.com/DittmerK/Linr/raw/refs/heads/main/releases/1.0/")
                 .basePath(imageDir.getAbsolutePath())
                 .files(FileMetadata.streamDirectory(imageDir.getAbsolutePath())
                         .peek(r -> r.classpath(!r.getSource().toString().endsWith(".jar")).modulepath(r.getSource().toString().endsWith(".jar")).ignoreBootConflict()))
                 .build();
 
                 Configuration config = Configuration.builder()
-                .baseUri("https://github.com/DittmerK/Linr/blob/main/releases/1.0/")
+                .baseUri("https://github.com/DittmerK/Linr/raw/refs/heads/main/releases/1.0/")
                 .basePath("${user.dir}")
                 .file(FileMetadata.readFrom(imageDir + "/angus-activation-2.0.2.jar")
                                 .uri(mavenUrl("org.eclipse.angus", "angus-activation", "2.0.2"))
@@ -82,28 +82,31 @@ public class AutoUpdater
                                 .uri(mavenUrl("jakarta.mail", "jakarta.mail-api", "2.1.3"))
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/javafx-base-22.0.1-win.jar")
-                                .uri(mavenUrl("org.openjfx", "javafx-base", "22.0.1"))
+                                .uri(mavenUrl("org.openjfx", "javafx-base", "22.0.1", OS.WINDOWS))
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/javafx-controls-22.0.1-win.jar")
-                                .uri(mavenUrl("org.openjfx", "javafx-controls", "22.0.1"))
+                                .uri(mavenUrl("org.openjfx", "javafx-controls", "22.0.1", OS.WINDOWS))
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/javafx-fxml-22.0.1-win.jar")
-                                .uri(mavenUrl("org.openjfx", "javafx-fxml", "22.0.1"))
+                                .uri(mavenUrl("org.openjfx", "javafx-fxml", "22.0.1", OS.WINDOWS))
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/javafx-graphics-22.0.1-win.jar")
-                                .uri(mavenUrl("org.openjfx", "javafx-graphics", "22.0.1"))
+                                .uri(mavenUrl("org.openjfx", "javafx-graphics", "22.0.1", OS.WINDOWS))
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/javafx-media-22.0.1-win.jar")
-                                .uri(mavenUrl("org.openjfx", "javafx-media", "22.0.1"))
+                                .uri(mavenUrl("org.openjfx", "javafx-media", "22.0.1",OS.WINDOWS))
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/javafx-swing-22.0.1-win.jar")
-                                .uri(mavenUrl("org.openjfx", "javafx-swing", "22.0.1"))
+                                .uri(mavenUrl("org.openjfx", "javafx-swing", "22.0.1", OS.WINDOWS))
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/jfoenix-9.0.10.jar")
                                 .uri(mavenUrl("com.jfoenix", "jfoenix", "9.0.10"))
                                 .classpath())    
                 .file(FileMetadata.readFrom(imageDir + "/linr-1.0.jar")
-                                .uri("Linr-1.0.jar")
+                                .uri("linr-1.0.jar")
+                                .classpath())
+                .file(FileMetadata.readFrom(imageDir + "/linrboot-1.0.jar")
+                                .uri("linrboot-1.0.jar")
                                 .classpath())
                 .file(FileMetadata.readFrom(imageDir + "/Linr.cfg")
                                 .uri("Linr.cfg")

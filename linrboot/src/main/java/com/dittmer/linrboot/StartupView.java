@@ -40,7 +40,7 @@ public class StartupView extends StackPane implements UpdateHandler
     private Configuration config;
     
 
-    public StartupView(Configuration config) 
+    public void setConfig(Configuration config) 
     {
         this.config = config;
 
@@ -97,7 +97,9 @@ public class StartupView extends StackPane implements UpdateHandler
 	public void failed(Throwable t) 
     {
 		Platform.runLater(() -> {
-			labelStatus.setText("Failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+			String error = "Failed: " + t.getClass().getSimpleName() + ": " + t.getMessage();
+			labelStatus.setText(error);
+			System.out.println(error);
 		});
 	}
 

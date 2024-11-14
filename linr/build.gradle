@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.update4j:update4j:1.5.9'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    runtimeOnly project(':linrboot')
 }
 
 
@@ -37,11 +38,11 @@ version = "1.0"
 
 runtime {
     options = ['--strip-debug', '--no-header-files', '--no-man-pages']
-    modules = ['java.xml', 'java.base', 'java.scripting', 'java.logging', 'jdk.zipfs','java.desktop', 'jdk.unsupported', 'jdk.unsupported.desktop']
+    modules = ['java.xml', 'java.base', 'java.scripting', 'java.logging', 'jdk.zipfs','java.desktop', 'jdk.unsupported', 'jdk.unsupported.desktop', 'java.net.http']
     jpackage {
         outputDir = 'jpackage'
-        // imageOutputDir = file("$buildDir/my-packaging-image")
-        // installerOutputDir = file("$buildDir/my-packaging-installer")
+        imageOutputDir = file("$buildDir/my-packaging-image")
+        installerOutputDir = file("$buildDir/my-packaging-installer")
         imageName = 'Linr'
         imageOptions = ['--win-console']
         skipInstaller = false
