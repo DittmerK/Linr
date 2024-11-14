@@ -28,4 +28,4 @@
         <file uri="${maven.central}/org/apache/pdfbox/pdfbox-io/3.0.2/pdfbox-io-3.0.2.jar" size="44768" checksum="ca0327b3" classpath="true"/>
         <file uri="${maven.central}/org/update4j/update4j/1.5.9/update4j-1.5.9.jar" size="129526" checksum="e50405a0" classpath="true"/>
     </files>
-</configuration>
+</configuration> 
