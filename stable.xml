@@ -22,8 +22,6 @@
         <file uri="${maven.central}/org/openjfx/javafx-media/22.0.1/javafx-media-22.0.1-win.jar" size="1123872" checksum="6486c040" classpath="true"/>
         <file uri="${maven.central}/org/openjfx/javafx-swing/22.0.1/javafx-swing-22.0.1-win.jar" size="90415" checksum="6c48ea9c" classpath="true"/>
         <file uri="${maven.central}/com/jfoenix/jfoenix/9.0.10/jfoenix-9.0.10.jar" size="2432549" checksum="d2f0138" classpath="true"/>
-        <!-- <file uri="Linr-1.0.jar" size="58728" checksum="4ba45c93" classpath="true"/>
-        <file uri="Linr.cfg" size="1011" checksum="e70d4e68" classpath="true"/> -->
         <file uri="${maven.central}/org/apache/pdfbox/pdfbox/3.0.2/pdfbox-3.0.2.jar" size="2024796" checksum="126236fe" classpath="true"/>
         <file uri="${maven.central}/org/apache/pdfbox/pdfbox-io/3.0.2/pdfbox-io-3.0.2.jar" size="44768" checksum="ca0327b3" classpath="true"/>
         <file uri="${maven.central}/org/update4j/update4j/1.5.9/update4j-1.5.9.jar" size="129526" checksum="e50405a0" classpath="true"/>
