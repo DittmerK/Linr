@@ -14,8 +14,8 @@ import org.update4j.OS;
 
 public class AutoUpdater 
 {
-    private static final String DEV_UPDATE_CONFIG = "https://github.com/DittmerK/Linr/blob/main/linr/dev.xml";
-    private static final String STABLE_UPDATE_CONFIG = "https://github.com/DittmerK/Linr/blob/main/linr/stable.xml";
+    private static final String DEV_UPDATE_CONFIG = "https://github.com/DittmerK/Linr/raw/refs/heads/main/dev.xml";
+    private static final String STABLE_UPDATE_CONFIG = "https://github.com/DittmerK/Linr/raw/refs/heads/main/stable.xml";
     public static final String LOCAL_UPDATE_CONFIG = "update.xml";
     private static Configuration configuration = null;
 
